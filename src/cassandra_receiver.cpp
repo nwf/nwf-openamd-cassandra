@@ -56,13 +56,16 @@ int main() {
 
   if(!fp) {
 	fprintf(stderr, "Unable to open input file: %s: %m\n", FIFO_NAME);
+	return -1;
+  } else {
+	fprintf(stderr, "OK, here we go!\n");
   }
 
   while ((num = fscanf(fp, "%X %lX %lA %lA %lA %X %X@%lX\n",
 					&rx.id, &rx.print_time,
 					&rx.avgx, &rx.avgy, &rx.avgz, &rx.nsamp,
 					&rx.touch, &rx.touch_time
-  )) != 8) {
+  )) == 8) {
     printf ("tag id=%u px=%f py=%f pz=%f\n", rx.id, rx.avgx, rx.avgy, rx.avgz);
 
     try {
@@ -104,10 +107,14 @@ int main() {
       transport->close();
     } catch (InvalidRequestException &re) {
       printf("ERROR: %s\n", re.why.c_str());
+	  return -2;
     } catch (TException &tx) {
       printf("ERROR: %s\n", tx.what());
+	  return -3;
     }
   }
 
-  return 0;
+  fprintf(stderr, "At bottom of loop, with num=%d\n", num);
+
+  return -4;
 }
