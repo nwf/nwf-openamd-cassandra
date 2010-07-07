@@ -66,7 +66,7 @@ int main() {
 					&rx.avgx, &rx.avgy, &rx.avgz, &rx.nsamp,
 					&rx.touch, &rx.touch_time
   )) == 8) {
-    printf ("tag id=%u px=%f py=%f pz=%f\n", rx.id, rx.avgx, rx.avgy, rx.avgz);
+    // printf ("tag id=%u px=%f py=%f pz=%f\n", rx.id, rx.avgx, rx.avgy, rx.avgz);
 
     try {
       transport->open();
@@ -106,10 +106,10 @@ int main() {
 
       transport->close();
     } catch (InvalidRequestException &re) {
-      printf("ERROR: %s\n", re.why.c_str());
+      fprintf(stderr, "ERROR: %s\n", re.why.c_str());
 	  return -2;
     } catch (TException &tx) {
-      printf("ERROR: %s\n", tx.what());
+      fprintf(stderr, "ERROR: %s\n", tx.what());
 	  return -3;
     }
   }
