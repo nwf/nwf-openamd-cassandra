@@ -52,7 +52,7 @@ int main() {
   rxevt rx;
 
   mknod(FIFO_NAME, S_IFIFO | 0666, 0);
-  fp = fopen(FIFO_NAME, O_RDONLY);
+  fp = fopen(FIFO_NAME, "r");
 
   if(!fp) {
 	fprintf(stderr, "Unable to open input file: %s: %m\n", FIFO_NAME);
