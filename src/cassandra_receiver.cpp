@@ -34,6 +34,8 @@ typedef struct rxevt {
 	double avgy;
 	double avgz;
 	int nsamp;
+
+	char *areaname;
 	
 	int touch;
 	time_t touch_time;
@@ -61,11 +63,12 @@ int main() {
 	fprintf(stderr, "OK, here we go!\n");
   }
 
-  while ((num = fscanf(fp, "%X %lX %lA %lA %lA %X %X@%lX\n",
+  while ((num = fscanf(fp, "%X %lX %lA %lA %lA %X %X@%lX %as\n",
 					&rx.id, &rx.print_time,
 					&rx.avgx, &rx.avgy, &rx.avgz, &rx.nsamp,
-					&rx.touch, &rx.touch_time
-  )) == 8) {
+					&rx.touch, &rx.touch_time, 
+					&rx.areaname
+  )) == 9) {
     // printf ("tag id=%u px=%f py=%f pz=%f\n", rx.id, rx.avgx, rx.avgy, rx.avgz);
 
     try {
@@ -97,7 +100,12 @@ int main() {
 		    new_col,
 		    boost::lexical_cast<std::string>(rx.avgz),
 		    t,ONE); 
-
+      new_col.column.assign("area");
+      client.insert(keyspace,
+		    boost::lexical_cast<std::string>(end_of_days-t),
+		    new_col,
+            rx.areaname,
+		    t,ONE); 
       if(rx.touch_time != 0) {
           new_col.column.assign("button");    
           client.insert(keyspace,
@@ -106,8 +114,8 @@ int main() {
                 boost::lexical_cast<std::string>(rx.touch),
                 t,ONE);  
       }
-
       transport->close();
+      free(rx.areaname);
     } catch (InvalidRequestException &re) {
       fprintf(stderr, "ERROR: %s\n", re.why.c_str());
 	  return -2;
