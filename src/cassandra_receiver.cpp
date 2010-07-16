@@ -97,12 +97,15 @@ int main() {
 		    new_col,
 		    boost::lexical_cast<std::string>(rx.avgz),
 		    t,ONE); 
-      new_col.column.assign("button");    
-      client.insert(keyspace,
-		    boost::lexical_cast<std::string>(end_of_days-t),
-		    new_col,
-		    boost::lexical_cast<std::string>(rx.touch),
-		    t,ONE);  
+
+      if(rx.touch_time != 0) {
+          new_col.column.assign("button");    
+          client.insert(keyspace,
+	            boost::lexical_cast<std::string>(end_of_days-t),
+                new_col,
+                boost::lexical_cast<std::string>(rx.touch),
+                t,ONE);  
+      }
 
       transport->close();
     } catch (InvalidRequestException &re) {
